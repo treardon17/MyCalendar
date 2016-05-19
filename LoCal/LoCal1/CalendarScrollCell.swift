@@ -17,8 +17,6 @@ class CalendarScrollCell: UITableViewCell {
     let blueColor = ColorManager.blueColor
     let greenColor = ColorManager.greenColor
 
-    
-    
     var container = UIView(forAutoLayout: ())
     var dateContainer = UIView(forAutoLayout: ())
     var dayName = UILabel(forAutoLayout: ())
@@ -96,25 +94,6 @@ class CalendarScrollCell: UITableViewCell {
                 self.daySummaryContainer.addSubview(hourCell)
                 self.setHeatMapHour(hourCell, index: index)
                 
-//                    let hourLabel = UILabel()
-//                    hourCell.addSubview(hourLabel)
-////                    hourLabel.autoCenterInSuperview()
-////                    hourLabel.textAlignment = .Center
-////                    hourLabel.autoPinEdgesToSuperviewEdges()
-//                    hourLabel.textColor = UIColor.whiteColor()
-//                    hourLabel.font = hourLabel.font.fontWithSize(10)
-//                    
-//                    if first{
-//                        hourLabel.text = "12"
-//                    }else if(index < 13){
-//                        hourLabel.text = "\(index)"
-//                    }else{
-//                        hourLabel.text = "\(index - 12)"
-//                    }
-//                
-//                self.hourHeatMapLabels.append(hourLabel)
-//                hourLabel.hidden = true
-                
                 index += 1
                 first = false
                 
@@ -124,6 +103,7 @@ class CalendarScrollCell: UITableViewCell {
         self.constrainHourViews()
         self.addedViews = true
         self.setNeedsDisplay()
+        self.setNeedsLayout()
     }
     
     func setHeatMapHour(hourCell:UIView, index:Int){
@@ -144,6 +124,8 @@ class CalendarScrollCell: UITableViewCell {
                 index += 1
             }
         }
+        self.setNeedsDisplay()
+        self.setNeedsLayout()
     }
     
     func constrainHourViews(){

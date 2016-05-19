@@ -38,22 +38,36 @@ class LocationManager: NSObject, CLLocationManagerDelegate  {
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]){
         
-        if CLLocationManager.locationServicesEnabled() {
-            switch(CLLocationManager.authorizationStatus()) {
-            case .NotDetermined, .Restricted, .Denied:
-                print("No access to location services")
-                break
-            case .AuthorizedAlways, .AuthorizedWhenInUse:
+        
+        if CLLocationManager.locationServicesEnabled(){
+            let authStatus = CLLocationManager.authorizationStatus()
+            if authStatus == .AuthorizedAlways || authStatus == .AuthorizedWhenInUse{
                 if let location = locations.first{
                     if let locationHandler = locationLookupHandler{
                         getAddressFromLocation(location, completion: locationHandler)
                     }
                 }
-                break
             }
-        } else {
-            print("Location services are not enabled")
         }
+        
+        
+//        if CLLocationManager.locationServicesEnabled() {
+//            switch(CLLocationManager.authorizationStatus()) {
+//            case .NotDetermined, .Restricted, .Denied:
+//                print("No access to location services")
+//                manager.requestAlwaysAuthorization()
+//                break
+//            case .AuthorizedAlways, .AuthorizedWhenInUse:
+//                if let location = locations.first{
+//                    if let locationHandler = locationLookupHandler{
+//                        getAddressFromLocation(location, completion: locationHandler)
+//                    }
+//                }
+//                break
+//            }
+//        } else {
+//            print("Location services are not enabled")
+//        }
     }
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
@@ -63,24 +77,63 @@ class LocationManager: NSObject, CLLocationManagerDelegate  {
     //returns the user's current location
     func getGeoLocation() -> CLLocation {
         
-        if CLLocationManager.locationServicesEnabled() {
-            switch(CLLocationManager.authorizationStatus()) {
-            case .NotDetermined, .Restricted, .Denied:
-                print("No access to location services")
-                break
-            case .AuthorizedAlways, .AuthorizedWhenInUse:
+        if CLLocationManager.locationServicesEnabled(){
+            let authStatus = CLLocationManager.authorizationStatus()
+            if authStatus == .AuthorizedAlways || authStatus == .AuthorizedWhenInUse{
                 manager.startUpdatingLocation()
                 if let location = self.manager.location{
                     self.currentLocation = location
                 }
                 manager.stopUpdatingLocation()
-                break
             }
-        } else {
-            print("Location services are not enabled")
         }
         
+//        if CLLocationManager.locationServicesEnabled() {
+//            switch(CLLocationManager.authorizationStatus()) {
+//            case .NotDetermined, .Restricted, .Denied:
+//                print("No access to location services")
+//                manager.requestAlwaysAuthorization()
+//                break
+//            case .AuthorizedAlways, .AuthorizedWhenInUse:
+//                manager.startUpdatingLocation()
+//                if let location = self.manager.location{
+//                    self.currentLocation = location
+//                }
+//                manager.stopUpdatingLocation()
+//                break
+//            }
+//        } else {
+//            print("Location services are not enabled")
+//        }
+        
         return self.currentLocation
+    }
+    
+    static func checkStatus(){
+        
+        var manager:CLLocationManager = CLLocationManager()
+        if CLLocationManager.locationServicesEnabled(){
+            let authStatus = CLLocationManager.authorizationStatus()
+            if authStatus == .NotDetermined || authStatus == .Restricted || authStatus == .Denied{
+                manager.requestAlwaysAuthorization()
+            }
+        }
+        
+        
+//        
+//        var manager:CLLocationManager = CLLocationManager()
+//        if CLLocationManager.locationServicesEnabled() {
+//            switch(CLLocationManager.authorizationStatus()) {
+//            case .NotDetermined, .Restricted, .Denied:
+//                print("No access to location services")
+//                manager.requestAlwaysAuthorization()
+//                break
+//            case .AuthorizedAlways, .AuthorizedWhenInUse:
+//                break
+//            }
+//        } else {
+//            print("Location services are not enabled")
+//        }
     }
     
     func getAddressFromCurrentLocation(completion: (location: String?) -> Void) {
@@ -97,12 +150,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate  {
                 return
             }
             
-            if CLLocationManager.locationServicesEnabled() {
-                switch(CLLocationManager.authorizationStatus()) {
-                case .NotDetermined, .Restricted, .Denied:
-                    print("No access to location services")
-                    break
-                case .AuthorizedAlways, .AuthorizedWhenInUse:
+            if CLLocationManager.locationServicesEnabled(){
+                let authStatus = CLLocationManager.authorizationStatus()
+                if authStatus == .AuthorizedAlways || authStatus == .AuthorizedWhenInUse{
                     if placemarks!.count > 0 {
                         let pm = placemarks![0]
                         //                print(pm.addressDictionary)      //everything
@@ -117,12 +167,35 @@ class LocationManager: NSObject, CLLocationManagerDelegate  {
                         print("Problem with the data received from geocoder")
                         completion(location: nil)
                     }
-
-                    break
                 }
-            } else {
-                print("Location services are not enabled")
             }
+            
+//            if CLLocationManager.locationServicesEnabled() {
+//                switch(CLLocationManager.authorizationStatus()) {
+//                case .NotDetermined, .Restricted, .Denied:
+//                    print("No access to location services")
+//                    break
+//                case .AuthorizedAlways, .AuthorizedWhenInUse:
+//                    if placemarks!.count > 0 {
+//                        let pm = placemarks![0]
+//                        //                print(pm.addressDictionary)      //everything
+//                        //                print(pm.name!)                  //address line
+//                        //                print(pm.locality!)              //city name
+//                        //                print(pm.administrativeArea!)    //state abbreviation
+//                        //                print(pm.postalCode!)            //zipcode
+//                        //                print(pm.country!)               //country
+//                        completion(location: "\(pm.name!) \(pm.locality!), \(pm.administrativeArea!) \(pm.postalCode!) \(pm.country!)")
+//                    }
+//                    else {
+//                        print("Problem with the data received from geocoder")
+//                        completion(location: nil)
+//                    }
+//
+//                    break
+//                }
+//            } else {
+//                print("Location services are not enabled")
+//            }
             
          })
     }

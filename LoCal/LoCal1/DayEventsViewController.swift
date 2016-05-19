@@ -45,7 +45,8 @@ class DayEventsViewController: UIViewController, MKMapViewDelegate, UITableViewD
     let calendarManager = CalendarManager()
     var dayEvents = [EKEvent]()
     var dateBeingViewed:NSDate? = nil
-    
+
+    let numEventsBubble = SummaryBubble(label: "# Events Today", color: ColorManager.greenColor)
     let eventTable = UITableView()
     
     
@@ -70,22 +71,30 @@ class DayEventsViewController: UIViewController, MKMapViewDelegate, UITableViewD
         eventView.autoPinEdgeToSuperviewEdge(.Bottom)
         eventView.autoPinEdgeToSuperviewEdge(.Right)
         eventView.autoPinEdgeToSuperviewEdge(.Left)
-        eventView.addSubview(eventTable)
         
         //Event table
+        eventView.addSubview(eventTable)
         eventTable.autoPinEdgeToSuperviewEdge(.Left)
         eventTable.autoPinEdgeToSuperviewEdge(.Right)
         eventTable.autoPinEdgeToSuperviewEdge(.Bottom)
         eventTable.autoPinEdge(.Top, toEdge: .Top, ofView: eventView, withOffset: eventViewSliderSize/2)
         eventTable.dataSource = self
-        eventTable.registerClass(EventCell.self, forCellReuseIdentifier: "EventCell")
+        eventTable.delegate = self
+        eventTable.registerClass(NormalEventCell.self, forCellReuseIdentifier: "NormalEventCell")
         eventTable.backgroundColor = darkColor
         
+        //Statistics
+//        eventView.addSubview(numEventsBubble)
+//        numEventsBubble.autoPinEdgeToSuperviewEdge(.Top)
+//        numEventsBubble.autoPinEdgeToSuperviewEdge(.Left)
+//        numEventsBubble.autoPinEdge(.Bottom, toEdge: .Top, ofView: eventTable)
+//        numEventsBubble.autoSetDimension(.Height, toSize: 40)
+        
+        //map stuff
         mapContainer.autoPinEdge(.Top, toEdge: .Top, ofView: self.view)
         mapContainer.autoPinEdge(.Left, toEdge: .Left, ofView: self.view)
         mapContainer.autoPinEdge(.Right, toEdge: .Right, ofView: self.view)
-        
-        mapContainerConstraint = mapContainer.autoPinEdge(.Bottom, toEdge: .Top, ofView: eventView)
+        mapContainerConstraint = mapContainer.autoPinEdge(.Bottom, toEdge: .Top, ofView: eventView, withOffset: 0, relation: .GreaterThanOrEqual)
         heightOfMapConstraint = mapContainer.autoMatchDimension(.Height, toDimension: .Height, ofView: self.view, withMultiplier: 0.30)
         bottomMapConstraint = mapContainer.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: self.view)
         bottomMapConstraint.active = false
@@ -94,8 +103,15 @@ class DayEventsViewController: UIViewController, MKMapViewDelegate, UITableViewD
         mapContainer.addSubview(myMap)
         myMap.autoPinEdgesToSuperviewEdges()
         myMap.delegate = self
-        myMap.showsUserLocation = true
-        centerMapOnLocation(initialLocation!)
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //check if location services are enabled
+            LocationManager.checkStatus()
+            self.myMap.showsUserLocation = true
+            self.centerMapOnLocation(self.initialLocation!)
+        });
+        
+        //set all the pins on the map
         self.updateMapViewEvents()
         
         //exit
@@ -129,6 +145,10 @@ class DayEventsViewController: UIViewController, MKMapViewDelegate, UITableViewD
         let arrowTap = UITapGestureRecognizer(target: self, action: #selector(DayEventsViewController.slideOnTap(_:)))
         eventViewSlider.addGestureRecognizer(slide)
         eventViewSlider.addGestureRecognizer(arrowTap)
+        
+        //get the events that are happening today
+        self.dayEvents = calendarManager.getEventsForDate(self.dateBeingViewed!)
+        self.numEventsBubble.setValueLabelWithInt(dayEvents.count)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -211,9 +231,9 @@ class DayEventsViewController: UIViewController, MKMapViewDelegate, UITableViewD
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    ///Places pins on the map for all the events on the day's date
     func updateMapViewEvents(){
-        self.dayEvents = calendarManager.getEventsForDate(self.dateBeingViewed!)
-        for event in dayEvents{
+        for event in self.dayEvents{
             let coords = calendarManager.getEventLocationCoords(event)?.geoLocation
             if let latitude = coords?.coordinate.latitude{
                 if let longitude = coords?.coordinate.longitude{
@@ -235,11 +255,23 @@ class DayEventsViewController: UIViewController, MKMapViewDelegate, UITableViewD
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 40
+        return 70
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
-        return (tableView.dequeueReusableCellWithIdentifier("EventCell") as? EventCell)!
+        let myEvent = self.dayEvents[indexPath.row]
+        
+        //if the event is not all day, then return a normal event cell
+        if(!myEvent.allDay){
+            let eventCell = (tableView.dequeueReusableCellWithIdentifier("NormalEventCell") as? NormalEventCell)!
+            eventCell.eventTitle.text = myEvent.title
+            eventCell.startTimeLabel.text = calendarManager.getFormattedEventStartTime(myEvent)
+            eventCell.endTimeLabel.text = calendarManager.getFormattedEventEndTime(myEvent)
+            return eventCell
+        }else{
+            return (tableView.dequeueReusableCellWithIdentifier("NormalEventCell") as? NormalEventCell)!
+        }
+        
     }
     
     func tableView(tableView:UITableView, numberOfRowsInSection section:Int) -> Int

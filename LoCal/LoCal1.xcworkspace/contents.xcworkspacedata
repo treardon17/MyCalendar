@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:LoCal1.xcodeproj">
+      location = "group:/Users/tylerreardon/Google Drive/College/0-Junior/Spring/MobileAppDev/MyCalendar/LoCal/LoCal.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

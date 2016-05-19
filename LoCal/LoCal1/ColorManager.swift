@@ -16,4 +16,5 @@ class ColorManager{
     static let blueColor = UIColor(red: 44/255, green: 105/255, blue: 157/255, alpha: 1)
     static let greenColor = UIColor(red: 96/255, green: 157/255, blue: 44/255, alpha: 1)
     static let normalColor = UIColor(red: 58/255, green: 61/255, blue: 76/255, alpha: 1)
+    static let backgcolor = UIColor(red: 42/255, green: 44/255, blue: 54/255, alpha: 1)
 }

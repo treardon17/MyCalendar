@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C380552A1CEAFD5E00D6C073"
-               BuildableName = "LoCal1.app"
+               BuildableName = "LoCal.app"
                BlueprintName = "LoCal1"
-               ReferencedContainer = "container:LoCal1.xcodeproj">
+               ReferencedContainer = "container:LoCal.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C38055411CEAFD5E00D6C073"
-               BuildableName = "LoCal1Tests.xctest"
+               BuildableName = "LoCal.xctest"
                BlueprintName = "LoCal1Tests"
-               ReferencedContainer = "container:LoCal1.xcodeproj">
+               ReferencedContainer = "container:LoCal.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C380554C1CEAFD5E00D6C073"
-               BuildableName = "LoCal1UITests.xctest"
+               BuildableName = "LoCal.xctest"
                BlueprintName = "LoCal1UITests"
-               ReferencedContainer = "container:LoCal1.xcodeproj">
+               ReferencedContainer = "container:LoCal.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C380552A1CEAFD5E00D6C073"
-            BuildableName = "LoCal1.app"
+            BuildableName = "LoCal.app"
             BlueprintName = "LoCal1"
-            ReferencedContainer = "container:LoCal1.xcodeproj">
+            ReferencedContainer = "container:LoCal.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C380552A1CEAFD5E00D6C073"
-            BuildableName = "LoCal1.app"
+            BuildableName = "LoCal.app"
             BlueprintName = "LoCal1"
-            ReferencedContainer = "container:LoCal1.xcodeproj">
+            ReferencedContainer = "container:LoCal.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C380552A1CEAFD5E00D6C073"
-            BuildableName = "LoCal1.app"
+            BuildableName = "LoCal.app"
             BlueprintName = "LoCal1"
-            ReferencedContainer = "container:LoCal1.xcodeproj">
+            ReferencedContainer = "container:LoCal.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

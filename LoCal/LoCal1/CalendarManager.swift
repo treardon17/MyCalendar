@@ -31,17 +31,19 @@ class CalendarManager {
         self.currentMonth = (calendar?.component(NSCalendarUnit.Month, fromDate: NSDate()))!
         self.currentYear = (calendar?.component(NSCalendarUnit.Year, fromDate: NSDate()))!
         numberOfDaysLoaded = getNumDaysInYear(self.currentYear) + getNumDaysInYear(self.currentYear - 1)
-        checkStatus()
         
+        //make sure we have access to the calendar
+        self.checkStatus()
+        
+        //get the current date
         let date = NSDate()
         let components = calendar!.components([.NSHourCalendarUnit , .NSMinuteCalendarUnit , .NSSecondCalendarUnit], fromDate: date)
-        
         self.currentHour = components.hour
         self.currentMinute = components.minute
         let second = components.second
         
-        let beginTimerAfter = 60 - second
         //Begin the timer on the minute (for accuracy)
+        let beginTimerAfter = 60 - second
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(beginTimerAfter)*Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
             self.updateDateInfo()
             //update the calendar info every 60 seconds
@@ -104,14 +106,13 @@ class CalendarManager {
         switch (status) {
         case EKAuthorizationStatus.NotDetermined:
             eventStore.requestAccessToEntityType(.Event, completion: {_,_ in
-                print("has access")
                 if EKEventStore.authorizationStatusForEntityType(EKEntityType.Event) == EKAuthorizationStatus.Authorized{
                     self.authorized = true
                 }
             })
             break
         case EKAuthorizationStatus.Authorized:
-            print("Authorized")
+            //print("Authorized")
             self.authorized = true
             break
         case EKAuthorizationStatus.Restricted, EKAuthorizationStatus.Denied:

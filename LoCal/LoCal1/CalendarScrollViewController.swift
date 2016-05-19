@@ -50,6 +50,11 @@ class CalendarScrollViewController: UIViewController, UITableViewDataSource, UIT
         cellCache.countLimit = 120 // cache up to four months worth of data
         cellCache.evictsObjectsWithDiscardedContent = true
         
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //enable location services
+            LocationManager.checkStatus()
+        });
+        
         //update calendarView every 60 seconds
         let date = NSDate()
         let components = calendarManager.calendar.components([.NSDayCalendarUnit, .NSHourCalendarUnit , .NSMinuteCalendarUnit , .NSSecondCalendarUnit], fromDate: date)
@@ -57,7 +62,7 @@ class CalendarScrollViewController: UIViewController, UITableViewDataSource, UIT
 //        let currentMinute = components.minute
         self.currentDay = components.day
         let second = components.second
-        let beginTimerAfter = 60 - second
+        let beginTimerAfter = (60 - second) + 1   //give an extra second so that the other values can be updated as well
         //Begin the timer on the minute (for accuracy)
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(beginTimerAfter)*Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
             //update the calendar info every 60 seconds
